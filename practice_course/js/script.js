@@ -9,11 +9,12 @@ const personalMovieDB = {
 };
 let i = 0;
 while (i != 2) {
-    const question = prompt("Один из последних просмотренных фильмов?", "");
-    if (question.length > 50 || question.length == 0) {
+    const question = prompt("Один из последних просмотренных фильмов?", "")
+          answer = prompt("На сколько оцените его?", "");
+    if (question.length > 50 || question == "" || question == null 
+    || answer == "" || answer == null) {
         continue;
     };
-    const answer = prompt("На сколько оцените его?", "");
     personalMovieDB.movies[question] = answer;
     i++;
 };
