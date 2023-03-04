@@ -21,7 +21,6 @@ const movieDB = {
         "Ла-ла лэнд",
         "Одержимость",
         "Скотт Пилигрим против...",
-        "AAAAAAAAA"
     ]
 };
 
@@ -45,3 +44,5 @@ movieDB.movies.forEach((item, index) => {
         <div class="delete"></div>
     </li>`;
 });
+
+
