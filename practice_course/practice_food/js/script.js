@@ -58,6 +58,14 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
+    function getZero(num) {
+        if (num >= 0 && num <= 9) {
+            return `0${num}`;
+        } else {
+            return num;
+        }
+    }
+
     function setClock(selector, endtime) {
         const timer = document.querySelector(selector),
               days = timer.querySelector("#days"),
@@ -66,13 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
               seconds = timer.querySelector("#seconds"),
               timeInterval = setInterval(updateClock, 1000); 
 
+        updateClock();
+
         function updateClock() {
             const t = getTimeRemaining(endtime);
 
-            days.innerHTML = t.days;
-            hours.innerHTML = t.hours;
-            minutes.innerHTML = t.minutes;
-            seconds.innerHTML = t.seconds;
+            days.innerHTML = getZero(t.days);
+            hours.innerHTML = getZero(t.hours);
+            minutes.innerHTML = getZero(t.minutes);
+            seconds.innerHTML = getZero(t.seconds);
             
             if (t.total <= 0) {
                 clearInterval(timeInterval);
@@ -81,4 +91,57 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
     setClock(".timer", deadline);
+
+    //Modal
+
+    const modalTrigger = document.querySelectorAll("[data-modal]"),
+          modal = document.querySelector(".modal"),
+          modalCloseBtn = document.querySelector("[data-close]");
+
+    
+    function showModal() {
+        modalTrigger.forEach(item => {
+        item.addEventListener("click", event => {
+            const target = event.target;
+
+            if (target && target.classList.contains("btn")) {
+                modal.classList.add("show");
+                modal.classList.remove("hide");
+                document.body.style.overflow = "hidden";
+            }
+            });
+        });
+    }
+
+    function modalClose() {
+        modal.classList.add("hide");
+        modal.classList.remove("show");
+        document.body.style.overflow = "";
+    }
+
+    function hideModal() {
+        modalCloseBtn.addEventListener("click", event => {
+            const target = event.target;
+
+            if (target && target.classList.contains("modal__close")) {
+                modalClose();
+            }
+        });
+        modal.addEventListener("click", event => {
+            const target = event.target;
+
+            if (target === modal) {
+                modalClose();
+            }
+        });
+
+        document.addEventListener("keydown", event => {
+            if (event.code === "Escape" && modal.classList.contains("show")) {
+                modalClose();
+            }
+        })
+    }
+
+    showModal();
+    hideModal();
 })  
