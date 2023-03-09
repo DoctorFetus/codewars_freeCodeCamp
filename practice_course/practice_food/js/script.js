@@ -97,7 +97,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalTrigger = document.querySelectorAll("[data-modal]"),
           modal = document.querySelector(".modal"),
           modalCloseBtn = document.querySelector("[data-close]");
+    
+    function modalClose() {
+        modal.classList.add("hide");
+        modal.classList.remove("show");
+        document.body.style.overflow = "";
+    }
 
+    function modalOpen() {
+        modal.classList.add("show");
+        modal.classList.remove("hide");
+        document.body.style.overflow = "hidden";
+        clearInterval(modalTimeId);
+    }
     
     function showModal() {
         modalTrigger.forEach(item => {
@@ -105,18 +117,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const target = event.target;
 
             if (target && target.classList.contains("btn")) {
-                modal.classList.add("show");
-                modal.classList.remove("hide");
-                document.body.style.overflow = "hidden";
+                modalOpen();
             }
             });
         });
-    }
-
-    function modalClose() {
-        modal.classList.add("hide");
-        modal.classList.remove("show");
-        document.body.style.overflow = "";
     }
 
     function hideModal() {
@@ -144,4 +148,89 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showModal();
     hideModal();
-})  
+    
+    // const modalTimeId = setTimeout(modalOpen, 4000);
+
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= 
+        document.documentElement.scrollHeight) {
+            window.removeEventListener("scroll", showModalByScroll);
+            modalOpen();
+        }
+    }
+    
+    window.addEventListener("scroll", showModalByScroll);
+
+    // Карточки с использованием классов
+
+    class MenuCard {
+        constructor(src, alt, subtitle, descr, price, parent) {
+            this.src = src;
+            this.alt = alt; 
+            this.subtitle = subtitle;
+            this.descr = descr;
+            this.price = price;
+            this.parent =  document.querySelector(parent);
+            this.transfer = 27;
+            this.changeToUAH();
+        }
+
+        changeToUAH() {
+            this.price = this.price * this.transfer;
+        }
+
+        create() {
+            const element = document.createElement("div");
+            element.classList.add("menu__item")
+            this.parent.append(element);
+            element.innerHTML = `
+            <img src=${this.src} alt=${this.alt}>
+            <h3 class="menu__item-subtitle">Меню "${this.subtitle}"</h3>
+            <div class="menu__item-descr">${this.descr}</div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+                <div class="menu__item-cost">Цена:</div>
+                <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+            </div>`;
+        }
+    }
+
+    const fitnes = new MenuCard("img/tabs/vegy.jpg",
+     "vegy",
+     "Фитнес",
+     "Меню 'Фитнес' \
+    - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт \
+    активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой \
+    и высоким качеством!", 
+     9, 
+    ".menu__field .container");
+
+    const elite = new MenuCard(
+     "img/tabs/elite.jpg",
+     "elite",
+     "Премиум", 
+     "Меню 'Постное' \
+     - это тщательный подбор ингредиентов: полное отсутствие продуктов животного \
+     происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество\
+      белков за счет тофу и импортных вегетарианских стейков.",
+     14, 
+     ".menu__field .container");
+
+    
+    const post = new MenuCard(
+     "img/tabs/post.jpg",
+     "post",
+     "Постное",
+     "Меню 'Постное' \
+    - это тщательный подбор ингредиентов: полное отсутствие продуктов животного \
+    происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество \
+    белков за счет тофу и импортных вегетарианских стейков.",
+     14,
+     ".menu__field .container");
+    
+    
+    fitnes.create();
+    elite.create();
+    post.create();
+
+});
