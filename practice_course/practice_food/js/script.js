@@ -164,12 +164,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Карточки с использованием классов
 
     class MenuCard {
-        constructor(src, alt, subtitle, descr, price, parent) {
+        constructor(src, alt, subtitle, descr, price, parent, ...classes) {
             this.src = src;
             this.alt = alt; 
             this.subtitle = subtitle;
             this.descr = descr;
             this.price = price;
+            this.classes = classes;
             this.parent =  document.querySelector(parent);
             this.transfer = 27;
             this.changeToUAH();
@@ -181,7 +182,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         create() {
             const element = document.createElement("div");
-            element.classList.add("menu__item")
+
+            if (this.classes.length === 0) {
+                this.element = "menu__item";
+                element.classList.add(this.element);
+            } else {
+                this.classes.forEach(className => element.classList.add(className));
+            }
+
             this.parent.append(element);
             element.innerHTML = `
             <img src=${this.src} alt=${this.alt}>
