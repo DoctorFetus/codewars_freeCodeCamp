@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Timer
 
-    const deadline = "2023-03-11";
+    const deadline = "2023-03-15";
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showModal();
     hideModal();
     
-    // const modalTimeId = setTimeout(modalOpen, 4000);
+    // const modalTimeId = setTimeout(modalOpen, 1000);
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= 
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
      происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество\
       белков за счет тофу и импортных вегетарианских стейков.",
      14, 
-     ".menu__field .container");
+     ".menu__field .container"); 
 
     
     const post = new MenuCard(
@@ -240,5 +240,60 @@ document.addEventListener("DOMContentLoaded", () => {
     fitnes.create();
     elite.create();
     post.create();
+
+    // Обработка данных из формы
+    
+    const forms = document.querySelectorAll("form");
+
+    const message = {
+        loading: 'Загрузка',
+        success: 'Спасибо, мы скоро с вами свяжемся!',
+        failure: 'Что-то пошло не так...' 
+    };
+
+    forms.forEach(item => {
+        postData(item);
+    })
+
+    function postData(form) {
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement("div");
+            statusMessage.classList.add("status");
+            statusMessage.textContent = message.loading;
+            form.append(statusMessage);
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+            request.setRequestHeader('Content-type', 'aplication/json');
+            
+            const formData = new FormData(form);  
+            const object = {};
+
+            formData.forEach((value, key) => {
+                object[key] = value;
+            });
+
+            const json = JSON.stringify(object);
+            
+            request.send(json);
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    }, 2000);
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+            });
+
+
+        }); 
+    }
 
 });
